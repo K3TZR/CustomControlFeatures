@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "CustomControlFeature",
+  name: "CustomControlFeatures",
   platforms: [
     .macOS(.v13),
   ],
