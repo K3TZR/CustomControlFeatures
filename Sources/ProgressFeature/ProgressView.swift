@@ -31,7 +31,6 @@ public struct ProgressView: View {
         Button("Cancel") { viewStore.send(.cancel) }
       }
       .onAppear() { if viewStore.duration != nil { viewStore.send(.startTimer) } }
-      .border(.red)
     }
     .frame(width: 200)
     .padding()
