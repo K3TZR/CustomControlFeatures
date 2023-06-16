@@ -69,12 +69,14 @@ public struct ApiStringView: View {
         .onExitCommand {
           // abort (ESC key)
           entryMode = false
+          entryFocus = false
         }
       
         .onSubmit {
           // submit (ENTER key)
           action(valueString)
           entryMode = false
+          entryFocus = false
         }
       
     } else {
@@ -88,7 +90,16 @@ public struct ApiStringView: View {
               Rectangle()
                 .stroke(.secondary, lineWidth:1)
               : nil)
-        
+
+          .onAppear {
+            if value.isEmpty {
+              // force focus & selection
+              self.entryFocus = true
+              valueString = value
+              entryMode = true
+            }
+          }
+
         // Tap target
         Rectangle()
           .foregroundColor(.clear)
