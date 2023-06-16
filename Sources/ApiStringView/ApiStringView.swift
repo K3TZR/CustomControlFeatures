@@ -13,7 +13,9 @@ public struct ApiStringView: View {
   let action: (String) -> Void
   let isValid: (String) -> Bool
   let width: CGFloat
+  let height: CGFloat
   let font: Font
+  let bordered: Bool
   
   public init
   (
@@ -22,7 +24,9 @@ public struct ApiStringView: View {
     action: @escaping (String) -> Void,
     isValid: @escaping (String) -> Bool = { _ in true },
     width: CGFloat = 100,
-    font: Font = .body
+    height: CGFloat = 20,
+    font: Font = .body,
+    bordered: Bool = false
   )
   {
     self.hint = hint
@@ -30,7 +34,9 @@ public struct ApiStringView: View {
     self.action = action
     self.isValid = isValid
     self.width = width
+    self.height = height
     self.font = font
+    self.bordered = bordered
   }
   
   @State var valueString = ""
@@ -72,16 +78,29 @@ public struct ApiStringView: View {
         }
       
     } else {
-      // Fixed view
-      Text(value)
-        .font(font)
-        .frame(width: width, alignment: .leading)
-      
-        .onTapGesture {
-          // switch to Editable view
-          valueString = value
-          entryMode = true
-        }
+      ZStack {
+        // Fixed view
+        Text(value)
+          .font(font)
+          .frame(width: width, height: height, alignment: .leading)
+          .overlay(
+              bordered ?
+              Rectangle()
+                .stroke(.secondary, lineWidth:1)
+              : nil)
+        
+        // Tap target
+        Rectangle()
+          .foregroundColor(.clear)
+          .frame(width: width, height: height)
+          .contentShape(Rectangle()) 
+          .onTapGesture {
+            // switch to Editable view
+            valueString = value
+            entryMode = true
+          }
+
+      }
     }
   }
 }

@@ -14,7 +14,9 @@ public struct ApiIntView: View {
   let action: (String) -> Void
   let isValid: (String) -> Bool
   let width: CGFloat
+  let height: CGFloat
   let font: Font
+  let bordered: Bool
   
   public init
   (
@@ -24,7 +26,9 @@ public struct ApiIntView: View {
     action: @escaping (String) -> Void,
     isValid: @escaping (String) -> Bool = { _ in true },
     width: CGFloat = 100,
-    font: Font = .body
+    height: CGFloat = 20,
+    font: Font = .body,
+    bordered: Bool = false
   )
   {
     self.hint = hint
@@ -33,7 +37,9 @@ public struct ApiIntView: View {
     self.action = action
     self.isValid = isValid
     self.width = width
+    self.height = height
     self.font = font
+    self.bordered = bordered
   }
   
   @State var valueString = ""
@@ -76,18 +82,28 @@ public struct ApiIntView: View {
         }
       
     } else {
-      // Fixed view
-      Text(formatter.string(from: value as NSNumber)!)
-        .font(font)
-        .multilineTextAlignment(.trailing)
-        .frame(width: width)
-        .zIndex(1)
-      
-        .onTapGesture {
-          // switch to Editable view
-          valueString = NumberFormatter().string(from: value as NSNumber)!
-          entryMode = true
-        }
+      ZStack {
+        // Fixed view
+        Text(formatter.string(from: value as NSNumber)!)
+          .font(font)
+          .frame(width: width, height: height, alignment: .trailing)
+          .overlay(
+              bordered ?
+              Rectangle()
+                .stroke(.secondary, lineWidth:1)
+              : nil)
+
+        // Tap target
+        Rectangle()
+          .foregroundColor(.clear)
+          .frame(width: width, height: height)
+          .contentShape(Rectangle())
+          .onTapGesture {
+            // switch to Editable view
+            valueString = NumberFormatter().string(from: value as NSNumber)!
+            entryMode = true
+          }
+      }
     }
   }
 }
